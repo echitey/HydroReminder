@@ -16,6 +16,8 @@ import androidx.core.content.ContextCompat;
 
 import br.com.echitey.android.hydroreminder.MainActivity;
 import br.com.echitey.android.hydroreminder.R;
+import br.com.echitey.android.hydroreminder.sync.ReminderTasks;
+import br.com.echitey.android.hydroreminder.sync.WaterReminderIntentService;
 
 public class NotificationUtils {
 
@@ -29,6 +31,8 @@ public class NotificationUtils {
      * This pending intent id is used to uniquely reference the pending intent
      */
     private static final int WATER_REMINDER_PENDING_INTENT_ID = 3417;
+    private static final int ACTION_DRINK_PENDING_INTENT_ID = 3418;
+    private static final int ACTION_IGNORE_PENDING_INTENT_ID = 3419;
     /**
      * This notification channel id is used to link notifications to this channel
      */
@@ -85,6 +89,8 @@ public class NotificationUtils {
                                 context.getString(R.string.charging_reminder_notification_body)))
                         .setDefaults(Notification.DEFAULT_VIBRATE)
                         .setContentIntent(contentIntent(context))
+                        .addAction(drinkWaterAction(context))
+                        .addAction(ignoreReminderAction(context))
                         .setAutoCancel(true);
 
         // set the notification's priority to PRIORITY_HIGH.
@@ -96,5 +102,54 @@ public class NotificationUtils {
         // Pass in a unique ID of your choosing for the notification and notificationBuilder.build()
         notificationManager.notify(WATER_REMINDER_NOTIFICATION_ID, builder.build());
 
+    }
+
+    // Method to clear all notifications
+    public static void clearAllNotifications(Context context){
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
+
+    // Ignore Reminder Action
+    private static NotificationCompat.Action ignoreReminderAction(Context context){
+        Intent intent = new Intent(context, WaterReminderIntentService.class);
+        intent.setAction(ReminderTasks.ACTION_DISMISS_NOTIFICATION);
+
+        PendingIntent pendingIntent = PendingIntent.getService(
+                context,
+                ACTION_IGNORE_PENDING_INTENT_ID,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        NotificationCompat.Action action = new NotificationCompat.Action(
+                R.drawable.ic_local_drink_grey_120px,
+                "No, Thanks.",
+                pendingIntent
+        );
+
+        return action;
+    }
+
+    // Drink Water Action
+    private static NotificationCompat.Action drinkWaterAction(Context context){
+        Intent intent = new Intent(context, WaterReminderIntentService.class);
+        intent.setAction(ReminderTasks.ACTION_INCREMENT_WATER_COUNT);
+
+        PendingIntent pendingIntent = PendingIntent.getService(
+                context,
+                ACTION_DRINK_PENDING_INTENT_ID,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        NotificationCompat.Action action = new NotificationCompat.Action(
+                R.drawable.ic_local_drink_grey_120px,
+                "I did id!",
+                pendingIntent
+        );
+
+        return action;
     }
 }
