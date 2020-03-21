@@ -134,20 +134,20 @@ public class NotificationUtils {
 
     // Drink Water Action
     private static NotificationCompat.Action drinkWaterAction(Context context){
-        Intent intent = new Intent(context, WaterReminderIntentService.class);
-        intent.setAction(ReminderTasks.ACTION_INCREMENT_WATER_COUNT);
+        Intent drinkIntent = new Intent(context, WaterReminderIntentService.class);
+        drinkIntent.setAction(ReminderTasks.ACTION_INCREMENT_WATER_COUNT);
 
-        PendingIntent pendingIntent = PendingIntent.getService(
+        PendingIntent drinkPendingIntent = PendingIntent.getService(
                 context,
                 ACTION_DRINK_PENDING_INTENT_ID,
-                intent,
+                drinkIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         NotificationCompat.Action action = new NotificationCompat.Action(
                 R.drawable.ic_local_drink_grey_120px,
                 "I did id!",
-                pendingIntent
+                drinkPendingIntent
         );
 
         return action;
