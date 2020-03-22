@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import br.com.echitey.android.hydroreminder.sync.ReminderTasks;
+import br.com.echitey.android.hydroreminder.sync.ReminderUtilities;
 import br.com.echitey.android.hydroreminder.sync.WaterReminderIntentService;
 import br.com.echitey.android.hydroreminder.utilities.NotificationUtils;
 import br.com.echitey.android.hydroreminder.utilities.PreferenceUtilities;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements
         /** Set the original values in the UI **/
         updateWaterCount();
         updateChargingReminderCount();
+
+        ReminderUtilities.scheduleChargingReminder(this);
 
         /** Setup the shared preference listener **/
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
